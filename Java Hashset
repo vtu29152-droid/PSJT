@@ -1,0 +1,30 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+    public static void main(String[] args) {
+        Scanner s = new Scanner(System.in);
+        
+        if (!s.hasNextInt()) return;
+        int t = s.nextInt();
+        
+        String[] pair_left = new String[t];
+        String[] pair_right = new String[t];
+        
+        for (int i = 0; i < t; i++) {
+            pair_left[i] = s.next();
+            pair_right[i] = s.next();
+        }
+        
+        // HashSet to store unique string pairs
+        HashSet<String> uniquePairs = new HashSet<>();
+        
+        for (int i = 0; i < t; i++) {
+            // Combine left and right strings with a space delimiter
+            uniquePairs.add(pair_left[i] + " " + pair_right[i]);
+            
+            // Print the number of unique pairs currently in the set
+            System.out.println(uniquePairs.size());
+        }
+    }
+}
