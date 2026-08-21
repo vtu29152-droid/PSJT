@@ -1,0 +1,42 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        
+        // Read the number of lines
+        int n = scan.nextInt();
+        
+        // Create an ArrayList of ArrayLists to store the integers
+        ArrayList<ArrayList<Integer>> lines = new ArrayList<>();
+        
+        for (int i = 0; i < n; i++) {
+            int d = scan.nextInt();
+            ArrayList<Integer> row = new ArrayList<>();
+            for (int j = 0; j < d; j++) {
+                row.add(scan.nextInt());
+            }
+            lines.add(row);
+        }
+        
+        // Read the number of queries
+        int q = scan.nextInt();
+        
+        for (int i = 0; i < q; i++) {
+            int x = scan.nextInt();
+            int y = scan.nextInt();
+            
+            try {
+                // ArrayList indices are 0-based, while the problem uses 1-based indexing for lines and positions
+                int value = lines.get(x - 1).get(y - 1);
+                System.out.println(value);
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("ERROR!");
+            }
+        }
+        
+        scan.close();
+    }
+}
