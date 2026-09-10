@@ -1,0 +1,28 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+public class Solution {
+
+    public static int marsExploration(String s) {
+        int alteredCount = 0;
+        
+        for (int i = 0; i < s.length(); i++) {
+            char expected = (i % 3 == 1) ? 'O' : 'S';
+            if (s.charAt(i) != expected) {
+                alteredCount++;
+            }
+        }
+        
+        return alteredCount;
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String s = reader.readLine();
+        
+        if (s != null) {
+            System.out.println(marsExploration(s.trim()));
+        }
+    }
+}
