@@ -1,0 +1,102 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+public class Solution {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String nStr = reader.readLine();
+        if (nStr == null || nStr.trim().isEmpty()) return;
+        
+        int n = Integer.parseInt(nStr.trim());
+        String s = reader.readLine().trim();
+        
+        String t = s + s;
+        int len = 2 * n;
+        
+        // Manacher's algorithm for odd length palindromes
+        int[] d1 = new int[len];
+        for (int i = 0, l = 0, r = -1; i < len; i++) {
+            int k = (i > r) ? 1 : Math.min(d1[l + r - i], r - i + 1);
+            while (i - k >= 0 && i + k < len && t.charAt(i - k) == t.charAt(i + k)) {
+                k++;
+            }
+            d1[i] = k--;
+            if (i + k > r) {
+                l = i - k;
+                r = i + k;
+            }
+        }
+        
+        // Manacher's algorithm for even length palindromes
+        int[] d2 = new int[len];
+        for (int i = 0, l = 0, r = -1; i < len; i++) {
+            int k = (i > r) ? 0 : Math.min(d2[l + r - i + 1], r - i + 1);
+            while (i - k >= 0 && i + 1 + k < len && t.charAt(i - k) == t.charAt(i + 1 + k)) {
+                k++;
+            }
+            d2[i] = k--;
+            if (i + 1 + k > r) {
+                l = i - k;
+                r = i + 1 + k;
+            }
+        }
+        
+        // For each position, record the maximum palindrome length it can support
+        // that fits within a window of length n.
+        // For odd center i, the span is [i - (L-1)/2, i + (L-1)/2]
+        // For even center i (between i and i+1), the span is [i - L/2 + 1, i + L/2]
+        
+        int[] maxOddAt = new int[len];
+        int[] maxEvenAt = new int[len];
+        
+        for (int i = 0; i < len; i++) {
+            maxOddAt[i] = 2 * d1[i] - 1;
+            maxEvenAt[i] = 2 * d2[i];
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        
+        // For each rotation k from 0 to n-1, the window is [k, k + n - 1]
+        // A palindrome is fully within [k, k + n - 1] if its start >= k and end <= k + n - 1
+        for (int k = 0; k < n; k++) {
+            int maxPalindrome = 1;
+            int rightBound = k + n - 1;
+            
+            // We can check centers that can potentially provide the max palindrome for this window.
+            // To ensure O(N^2) worst case is avoided or optimized, or since N is typically manageable,
+            // let's check the relevant window range. For full efficiency, a sliding window maximum 
+            // structure can be used, but let's write the correct bounds check:
+            
+            for (int i = k; i <= rightBound; i++) {
+                // Odd length check
+                int maxL = maxOddAt[i];
+                // Clamp maxL so that the palindrome fits in [k, rightBound]
+                int r = (maxL - 1) / 2;
+                while (r >= 0 && (i - r < k || i + r > rightBound)) {
+                    r--;
+                }
+                if (2 * r + 1 > maxPalindrome) {
+                    maxPalindrome = 2 * r + 1;
+                }
+                
+                // Even length check
+                if (i < rightBound) {
+                    int maxE = maxEvenAt[i];
+                    int re = maxE / 2;
+                    while (re > 0 && (i - re + 1 < k || i + re > rightBound)) {
+                        re--;
+                    }
+                    if (2 * re > maxPalindrome) {
+                        maxPalindrome = 2 * re;
+                    }
+                }
+            }
+            
+            sb.append(maxPalindrome).append("\n");
+        }
+        
+        System.out.print(sb);
+    }
+}
