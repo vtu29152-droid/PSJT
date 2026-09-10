@@ -1,0 +1,58 @@
+import java.io.*;
+import java.util.*;
+
+public class Solution {
+
+    static int[] maxSubarray(int[] arr) {
+        int maxSubarraySum = arr[0];
+        int currentSubarraySum = arr[0];
+        
+        int maxSubsequenceSum = arr[0];
+        int maxElement = arr[0];
+        boolean allNegative = true;
+        
+        if (arr[0] > 0) {
+            allNegative = false;
+        }
+
+        for (int i = 1; i < arr.length; i++) {
+            // Subarray: Kadane's algorithm
+            currentSubarraySum = Math.max(arr[i], currentSubarraySum + arr[i]);
+            maxSubarraySum = Math.max(maxSubarraySum, currentSubarraySum);
+            
+            // Subsequence: Sum of all positive numbers, or max element if all are negative
+            if (arr[i] > 0) {
+                if (allNegative) {
+                    maxSubsequenceSum = arr[i];
+                    allNegative = false;
+                } else {
+                    maxSubsequenceSum += arr[i];
+                }
+            } else {
+                if (allNegative) {
+                    maxSubsequenceSum = Math.max(maxSubsequenceSum, arr[i]);
+                }
+            }
+        }
+        
+        return new int[] { maxSubarraySum, maxSubsequenceSum };
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        if (!scanner.hasNextInt()) return;
+        int t = scanner.nextInt();
+        
+        for (int tItr = 0; tItr < t; tItr++) {
+            int n = scanner.nextInt();
+            int[] arr = new int[n];
+            for (int i = 0; i < n; i++) {
+                arr[i] = scanner.nextInt();
+            }
+            
+            int[] result = maxSubarray(arr);
+            System.out.println(result[0] + " " + result[1]);
+        }
+        scanner.close();
+    }
+}
