@@ -1,0 +1,41 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
+public class Solution {
+
+    public static String twoStrings(String s1, String s2) {
+        boolean[] alphabet = new boolean[26];
+        
+        // Mark all characters present in s1
+        for (int i = 0; i < s1.length(); i++) {
+            alphabet[s1.charAt(i) - 'a'] = true;
+        }
+        
+        // Check if any character in s2 is found in s1
+        for (int i = 0; i < s2.length(); i++) {
+            if (alphabet[s2.charAt(i) - 'a']) {
+                return "YES";
+            }
+        }
+        
+        return "NO";
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        String line = reader.readLine();
+        if (line == null || line.trim().isEmpty()) return;
+        
+        int q = Integer.parseInt(line.trim());
+        StringBuilder output = new StringBuilder();
+        
+        while (q-- > 0) {
+            String s1 = reader.readLine().trim();
+            String s2 = reader.readLine().trim();
+            output.append(twoStrings(s1, s2)).append("\n");
+        }
+        
+        System.out.print(output);
+    }
+}
