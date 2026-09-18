@@ -1,0 +1,46 @@
+import java.util.LinkedList;
+
+class MyHashSet {
+
+    private final int NUM_BUCKETS = 769;
+    private LinkedList<Integer>[] buckets;
+
+    public MyHashSet() {
+        buckets = new LinkedList[NUM_BUCKETS];
+        for (int i = 0; i < NUM_BUCKETS; i++) {
+            buckets[i] = new LinkedList<>();
+        }
+    }
+    
+    // Simple hash function using modulo with a prime number
+    private int hash(int key) {
+        return key % NUM_BUCKETS;
+    }
+    
+    public void add(int key) {
+        int bucketIndex = hash(key);
+        // Add only if it doesn't already exist to maintain set uniqueness
+        if (!buckets[bucketIndex].contains(key)) {
+            buckets[bucketIndex].add(key);
+        }
+    }
+    
+    public void remove(int key) {
+        int bucketIndex = hash(key);
+        // Remove the object wrapper version so it removes by value, not index
+        buckets[bucketIndex].remove(Integer.valueOf(key));
+    }
+    
+    public boolean contains(int key) {
+        int bucketIndex = hash(key);
+        return buckets[bucketIndex].contains(key);
+    }
+}
+
+/**
+ * Your MyHashSet object will be instantiated and called as such:
+ * MyHashSet obj = new MyHashSet();
+ * obj.add(key);
+ * obj.remove(key);
+ * boolean param_3 = obj.contains(key);
+ */
