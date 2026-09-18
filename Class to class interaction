@@ -1,0 +1,71 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class UndergroundSystem {
+
+    // Helper class to store check-in details for a customer
+    private static class CheckInInfo {
+        String stationName;
+        int time;
+
+        public CheckInInfo(String stationName, int time) {
+            this.stationName = stationName;
+            this.time = time;
+        }
+    }
+
+    // Helper class to aggregate travel time and count for a specific route
+    private static class TripStats {
+        long totalTime;
+        int count;
+
+        public TripStats(long totalTime, int count) {
+            this.totalTime = totalTime;
+            this.count = count;
+        }
+    }
+
+    private Map<Integer, CheckInInfo> activeCheckIns;
+    private Map<String, TripStats> tripStatsMap;
+
+    public UndergroundSystem() {
+        activeCheckIns = new HashMap<>();
+        tripStatsMap = new HashMap<>();
+    }
+    
+    public void checkIn(int id, String stationName, int t) {
+        activeCheckIns.put(id, new CheckInInfo(stationName, t));
+    }
+    
+    public void checkOut(int id, String stationName, int t) {
+        CheckInInfo checkIn = activeCheckIns.remove(id);
+        if (checkIn != null) {
+            String routeKey = checkIn.stationName + "->" + stationName;
+            int travelTime = t - checkIn.time;
+
+            TripStats stats = tripStatsMap.getOrDefault(routeKey, new TripStats(0, 0));
+            stats.totalTime += travelTime;
+            stats.count += 1;
+            tripStatsMap.put(routeKey, stats);
+        }
+    }
+    
+    public double getAverageTime(String startStation, String endStation) {
+        String routeKey = startStation + "->" + endStation;
+        TripStats stats = tripStatsMap.get(routeKey);
+        
+        if (stats == null || stats.count == 0) {
+            return 0.0;
+        }
+        
+        return (double) stats.totalTime / stats.count;
+    }
+}
+
+/**
+ * Your UndergroundSystem object will be instantiated and called as such:
+ * UndergroundSystem obj = new UndergroundSystem();
+ * obj.checkIn(id,stationName,t);
+ * obj.checkOut(id,stationName,t);
+ * double param_3 = obj.getAverageTime(startStation,endStation);
+ */
